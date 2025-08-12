@@ -3,8 +3,8 @@ using HrSystem.Domain.Enums;
 namespace HrSystem.Application.Dtos.LeaveRequests;
 
 public sealed record LeaveRequestDto(
-    Guid Id,
-    Guid EmployeeId,
+    int Id,
+    int EmployeeId,
     DateOnly StartDate,
     DateOnly EndDate,
     string Reason,

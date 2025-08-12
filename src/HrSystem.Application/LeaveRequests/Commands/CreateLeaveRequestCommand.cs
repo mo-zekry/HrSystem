@@ -6,18 +6,18 @@ using MediatR;
 namespace HrSystem.Application.LeaveRequests.Commands;
 
 public sealed record CreateLeaveRequestCommand(
-    Guid EmployeeId,
+    int EmployeeId,
     DateOnly StartDate,
     DateOnly EndDate,
     string Reason
-) : IRequest<Guid>;
+) : IRequest<int>;
 
 internal sealed class CreateLeaveRequestCommandHandler(IRepository<LeaveRequest> repository)
-    : IRequestHandler<CreateLeaveRequestCommand, Guid>
+    : IRequestHandler<CreateLeaveRequestCommand, int>
 {
     private readonly IRepository<LeaveRequest> _repository = repository;
 
-    public async Task<Guid> Handle(
+    public async Task<int> Handle(
         CreateLeaveRequestCommand request,
         CancellationToken cancellationToken
     )

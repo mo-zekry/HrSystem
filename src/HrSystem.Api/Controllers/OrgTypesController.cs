@@ -13,8 +13,8 @@ public sealed class OrgTypesController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<OrgTypeDto>> GetById(Guid id, CancellationToken ct)
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<OrgTypeDto>> GetById(int id, CancellationToken ct)
     {
         var result = await _mediator.Send(new GetOrgTypeByIdQuery(id), ct);
         return result is null ? NotFound() : Ok(result);
@@ -41,13 +41,13 @@ public sealed class OrgTypesController(IMediator mediator) : ControllerBase
         CancellationToken ct
     )
     {
-        var id = await _mediator.Send(command, ct);
+    var id = await _mediator.Send(command, ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(
-        Guid id,
+        int id,
         [FromBody] UpdateOrgTypeCommand command,
         CancellationToken ct
     )

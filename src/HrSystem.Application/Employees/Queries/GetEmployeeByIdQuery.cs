@@ -7,7 +7,7 @@ using HrSystem.Domain.Entities;
 
 namespace HrSystem.Application.Employees.Queries;
 
-public sealed record GetEmployeeByIdQuery(Guid Id) : IRequest<EmployeeDto?>;
+public sealed record GetEmployeeByIdQuery(int Id) : IRequest<EmployeeDto?>;
 
 internal sealed class GetEmployeeByIdQueryHandler(IRepository<Employee> repository)
     : IRequestHandler<GetEmployeeByIdQuery, EmployeeDto?>

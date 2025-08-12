@@ -13,7 +13,7 @@ public class EfRepository<T>(HrSystemDbContext dbContext) : IRepository<T>
 
     private DbSet<T> Set => _dbContext.Set<T>();
 
-    public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         // Uses FindAsync for primary key lookup (no includes/specification here by design)
         return await Set.FindAsync([id], cancellationToken);

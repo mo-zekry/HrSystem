@@ -13,8 +13,8 @@ public sealed class EmployeesController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
-    [HttpGet("{id:guid}")]
-    public async Task<ActionResult<EmployeeDto>> GetById(Guid id, CancellationToken ct)
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<EmployeeDto>> GetById(int id, CancellationToken ct)
     {
         var result = await _mediator.Send(new GetEmployeeByIdQuery(id), ct);
         return result is null ? NotFound() : Ok(result);
@@ -24,7 +24,7 @@ public sealed class EmployeesController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<PagedResultDto<EmployeeDto>>> GetPaged(
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 20,
-        [FromQuery] Guid? orgUnitId = null,
+    [FromQuery] int? orgUnitId = null,
         [FromQuery] string? searchTerm = null,
         CancellationToken ct = default
     )
@@ -46,9 +46,9 @@ public sealed class EmployeesController(IMediator mediator) : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(
-        Guid id,
+        int id,
         [FromBody] UpdateEmployeeCommand command,
         CancellationToken ct
     )
@@ -62,8 +62,8 @@ public sealed class EmployeesController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
-    [HttpPost("{id:guid}/deactivate")]
-    public async Task<IActionResult> Deactivate(Guid id, CancellationToken ct)
+    [HttpPost("{id:int}/deactivate")]
+    public async Task<IActionResult> Deactivate(int id, CancellationToken ct)
     {
         await _mediator.Send(new DeactivateEmployeeCommand(id), ct);
         return NoContent();

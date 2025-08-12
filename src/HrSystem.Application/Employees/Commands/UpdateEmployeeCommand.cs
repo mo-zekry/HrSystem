@@ -5,11 +5,11 @@ using MediatR;
 namespace HrSystem.Application.Employees.Commands;
 
 public sealed record UpdateEmployeeCommand(
-    Guid Id,
+    int Id,
     string FirstName,
     string LastName,
     string Email,
-    Guid? OrgUnitId
+    int? OrgUnitId
 ) : IRequest;
 
 internal sealed class UpdateEmployeeCommandHandler(IRepository<Employee> repository)
@@ -26,7 +26,7 @@ internal sealed class UpdateEmployeeCommandHandler(IRepository<Employee> reposit
         employee.FirstName = request.FirstName;
         employee.LastName = request.LastName;
         employee.Email = request.Email;
-        if (request.OrgUnitId is Guid ouId)
+    if (request.OrgUnitId is int ouId)
             employee.OrgUnitId = ouId;
 
         await _repository.UpdateAsync(employee, cancellationToken);

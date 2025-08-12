@@ -10,7 +10,7 @@ internal sealed class UpdateEmployeeCommandValidator : AbstractValidator<UpdateE
         RuleFor(x => x.FirstName).NotEmpty().MaximumLength(100);
         RuleFor(x => x.LastName).NotEmpty().MaximumLength(100);
         RuleFor(x => x.Email).NotEmpty().EmailAddress().MaximumLength(256);
-        // OrgUnitId is optional; when provided must not be empty Guid
+        // OrgUnitId is optional; when provided must be a positive value
         When(
             x => x.OrgUnitId.HasValue,
             () =>

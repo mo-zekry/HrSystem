@@ -7,7 +7,7 @@ namespace HrSystem.Application.Specifications.LeaveRequests;
 // Get by Id
 public sealed class LeaveRequestByIdSpecification : BaseSpecification<LeaveRequest>
 {
-    public LeaveRequestByIdSpecification(Guid id)
+    public LeaveRequestByIdSpecification(int id)
         : base(l => l.Id == id)
     {
         EnableNoTracking();
@@ -17,7 +17,7 @@ public sealed class LeaveRequestByIdSpecification : BaseSpecification<LeaveReque
 // Requests for a given employee
 public sealed class LeaveRequestsByEmployeeSpecification : BaseSpecification<LeaveRequest>
 {
-    public LeaveRequestsByEmployeeSpecification(Guid employeeId)
+    public LeaveRequestsByEmployeeSpecification(int employeeId)
         : base(l => l.EmployeeId == employeeId)
     {
         ApplyOrderByDescending(l => l.Period.Start);

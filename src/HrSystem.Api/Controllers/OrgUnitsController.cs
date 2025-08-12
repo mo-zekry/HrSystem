@@ -14,7 +14,7 @@ public sealed class OrgUnitsController(IMediator mediator) : ControllerBase
 
     [HttpGet("hierarchy")]
     public async Task<ActionResult<IReadOnlyList<OrgUnitNodeDto>>> GetHierarchy(
-        [FromQuery] Guid? rootId,
+    [FromQuery] int? rootId,
         CancellationToken ct
     )
     {
@@ -32,9 +32,9 @@ public sealed class OrgUnitsController(IMediator mediator) : ControllerBase
         return CreatedAtAction(nameof(GetHierarchy), new { rootId = id }, new { id });
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(
-        Guid id,
+        int id,
         [FromBody] UpdateOrgUnitCommand command,
         CancellationToken ct
     )

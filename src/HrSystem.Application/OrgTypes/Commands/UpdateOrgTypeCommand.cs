@@ -4,7 +4,7 @@ using MediatR;
 
 namespace HrSystem.Application.OrgTypes.Commands;
 
-public sealed record UpdateOrgTypeCommand(Guid Id, string Name) : IRequest;
+public sealed record UpdateOrgTypeCommand(int Id, string Name) : IRequest;
 
 internal sealed class UpdateOrgTypeCommandHandler(IRepository<OrgType> repository)
     : IRequestHandler<UpdateOrgTypeCommand>

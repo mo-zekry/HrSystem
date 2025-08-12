@@ -22,38 +22,13 @@ namespace HrSystem.Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("HrSystem.Application.OrgUnits.Queries.OrgUnitFlat", b =>
-                {
-                    b.Property<int>("Depth")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("ManagerId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("OrgTypeId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("uuid");
-
-                    b.PrimitiveCollection<Guid[]>("Path")
-                        .IsRequired()
-                        .HasColumnType("uuid[]");
-
-                    b.ToTable("OrgUnitFlat");
-                });
-
             modelBuilder.Entity("HrSystem.Domain.Entities.Employee", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
@@ -76,8 +51,8 @@ namespace HrSystem.Infrastructure.Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<Guid>("OrgUnitId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("OrgUnitId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -97,14 +72,17 @@ namespace HrSystem.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HrSystem.Domain.Entities.LeaveRequest", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("EmployeeId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Reason")
                         .IsRequired()
@@ -128,8 +106,11 @@ namespace HrSystem.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HrSystem.Domain.Entities.OrgType", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
@@ -152,25 +133,28 @@ namespace HrSystem.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HrSystem.Domain.Entities.OrgUnit", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("ManagerId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("ManagerId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<Guid>("OrgTypeId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("OrgTypeId")
+                        .HasColumnType("integer");
 
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
@@ -208,8 +192,8 @@ namespace HrSystem.Infrastructure.Persistence.Migrations
 
                     b.OwnsOne("HrSystem.Domain.ValueObjects.DateRange", "Period", b1 =>
                         {
-                            b1.Property<Guid>("LeaveRequestId")
-                                .HasColumnType("uuid");
+                            b1.Property<int>("LeaveRequestId")
+                                .HasColumnType("integer");
 
                             b1.Property<DateOnly>("End")
                                 .HasColumnType("date")

@@ -5,7 +5,7 @@ using MediatR;
 
 namespace HrSystem.Application.OrgUnits.Queries;
 
-public sealed record GetOrgUnitsHierarchyQuery(Guid? RootId)
+public sealed record GetOrgUnitsHierarchyQuery(int? RootId)
     : IRequest<IReadOnlyList<OrgUnitNodeDto>>;
 
 internal sealed class GetOrgUnitsHierarchyQueryHandler(IRepository<OrgUnit> repository)
@@ -24,13 +24,13 @@ internal sealed class GetOrgUnitsHierarchyQueryHandler(IRepository<OrgUnit> repo
             // Fetch all org units once; hierarchy building is in-memory
             var all = await _repository.ListAsync(new AllSpec(), cancellationToken);
 
-            IEnumerable<OrgUnit> roots = request.RootId is Guid rootId
+            IEnumerable<OrgUnit> roots = request.RootId is int rootId
                 ? all.Where(o => o.Id == rootId)
                 : all.Where(o => o.ParentId == null);
 
             var lookup = all.ToLookup(o => o.ParentId);
 
-            List<OrgUnitNodeDto> Build(Guid? parentId)
+            List<OrgUnitNodeDto> Build(int? parentId)
             {
                 return lookup[parentId]
                     .OrderBy(o => o.Name)
@@ -45,7 +45,7 @@ internal sealed class GetOrgUnitsHierarchyQueryHandler(IRepository<OrgUnit> repo
                     .ToList();
             }
 
-            if (request.RootId is Guid)
+            if (request.RootId is int)
             {
                 return Build(request.RootId);
             }
@@ -80,7 +80,7 @@ internal sealed class GetOrgUnitsHierarchyQueryHandler(IRepository<OrgUnit> repo
                 ou.""Id"" AS Id, ou.""Name"" AS Name, ou.""OrgTypeId"" AS OrgTypeId,
                 ou.""ParentId"" AS ParentId, ou.""ManagerId"" AS ManagerId,
                 0 AS Depth,
-                ARRAY[ou.""Id""]::uuid[] AS Path
+                ARRAY[ou.""Id""]::int[] AS Path
         FROM ""org_units"" ou
             WHERE
                 ({rootId} IS NULL AND ou.""ParentId"" IS NULL)
@@ -100,7 +100,7 @@ internal sealed class GetOrgUnitsHierarchyQueryHandler(IRepository<OrgUnit> repo
         ORDER BY Path
     ", ct);
 
-        var byId = new Dictionary<Guid, OrgUnitNodeDto>(rows.Count);
+        var byId = new Dictionary<int, OrgUnitNodeDto>(rows.Count);
         var roots = new List<OrgUnitNodeDto>();
         foreach (var r in rows)
         {
@@ -113,7 +113,7 @@ internal sealed class GetOrgUnitsHierarchyQueryHandler(IRepository<OrgUnit> repo
                 new List<OrgUnitNodeDto>()
             );
             byId[r.Id] = node;
-            if (r.ParentId is Guid pid && byId.TryGetValue(pid, out var p))
+            if (r.ParentId is int pid && byId.TryGetValue(pid, out var p))
                 ((List<OrgUnitNodeDto>)p.Children).Add(node);
             else
                 roots.Add(node);
@@ -141,13 +141,13 @@ internal sealed class GetOrgUnitsHierarchyQueryHandler(IRepository<OrgUnit> repo
     public async Task<IReadOnlyList<OrgUnitNodeDto>> Handle(
         GetOrgUnitsHierarchyQuery request, CancellationToken ct)
     {
-        var rootIds = request.RootId is Guid rid
-            ? new List<Guid?> { rid }
-            : new List<Guid?> { null };
+        var rootIds = request.RootId is int rid
+            ? new List<int?> { rid }
+            : new List<int?> { null };
 
-        var childrenMap = new Dictionary<Guid?, List<OrgUnit>>();
-        var allFetched = new Dictionary<Guid, OrgUnit>();
-        var frontier = new List<Guid?>(rootIds);
+        var childrenMap = new Dictionary<int?, List<OrgUnit>>();
+        var allFetched = new Dictionary<int, OrgUnit>();
+        var frontier = new List<int?>(rootIds);
 
         while (frontier.Count > 0)
         {
@@ -162,10 +162,10 @@ internal sealed class GetOrgUnitsHierarchyQueryHandler(IRepository<OrgUnit> repo
                 list.Add(o);
             }
 
-            frontier = batch.Select(b => (Guid?)b.Id).ToList();
+            frontier = batch.Select(b => (int?)b.Id).ToList();
         }
 
-        List<OrgUnitNodeDto> Build(Guid? parentId)
+        List<OrgUnitNodeDto> Build(int? parentId)
             => (childrenMap.TryGetValue(parentId, out var kids) ? kids : Enumerable.Empty<OrgUnit>())
                .OrderBy(x => x.Name)
                .Select(o => new OrgUnitNodeDto(o.Id, o.Name, o.OrgTypeId, o.ParentId, o.ManagerId, Build(o.Id)))
@@ -176,7 +176,7 @@ internal sealed class GetOrgUnitsHierarchyQueryHandler(IRepository<OrgUnit> repo
 
     sealed class ByParentsSpec : Specifications.BaseSpecification<OrgUnit>
     {
-        public ByParentsSpec(IEnumerable<Guid?> parents)
+    public ByParentsSpec(IEnumerable<int?> parents)
         {
             Criteria = o => parents.Contains(o.ParentId);
             EnableNoTracking();

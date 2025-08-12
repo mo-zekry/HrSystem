@@ -6,14 +6,14 @@ namespace HrSystem.Domain.Entities;
 
 public class LeaveRequest : BaseEntity, IAggregateRoot
 {
-    public Guid EmployeeId { get; set; }
+    public int EmployeeId { get; set; }
     public DateRange Period { get; set; } = null!;
     public string Reason { get; set; } = string.Empty;
     public LeaveRequestStatus Status { get; set; }
 
     private LeaveRequest() { }
 
-    public LeaveRequest(Guid employeeId, DateRange period, string reason)
+    public LeaveRequest(int employeeId, DateRange period, string reason)
     {
         EmployeeId = employeeId;
         Period = period;

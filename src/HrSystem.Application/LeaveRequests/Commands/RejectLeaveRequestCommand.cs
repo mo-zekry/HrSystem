@@ -4,7 +4,7 @@ using MediatR;
 
 namespace HrSystem.Application.LeaveRequests.Commands;
 
-public sealed record RejectLeaveRequestCommand(Guid Id) : IRequest;
+public sealed record RejectLeaveRequestCommand(int Id) : IRequest;
 
 internal sealed class RejectLeaveRequestCommandHandler(IRepository<LeaveRequest> repository)
     : IRequestHandler<RejectLeaveRequestCommand>

@@ -7,7 +7,7 @@ using MediatR;
 namespace HrSystem.Application.LeaveRequests.Queries;
 
 // Assumption: "Manager" refers to OrgUnits where ManagerId == ManagerId; we return requests of employees in those org units
-public sealed record GetLeaveRequestsForManagerQuery(Guid ManagerId)
+public sealed record GetLeaveRequestsForManagerQuery(int ManagerId)
     : IRequest<IReadOnlyList<LeaveRequestDto>>;
 
 internal sealed class GetLeaveRequestsForManagerQueryHandler(
@@ -43,7 +43,7 @@ internal sealed class GetLeaveRequestsForManagerQueryHandler(
 
     private sealed class ManagedBySpec : Application.Specifications.BaseSpecification<OrgUnit>
     {
-        public ManagedBySpec(Guid managerId)
+    public ManagedBySpec(int managerId)
         {
             Where(o => o.ManagerId == managerId);
             EnableNoTracking();
@@ -52,7 +52,7 @@ internal sealed class GetLeaveRequestsForManagerQueryHandler(
 
     private sealed class EmployeesInOrgUnitsSpec : Specifications.BaseSpecification<Employee>
     {
-        public EmployeesInOrgUnitsSpec(ISet<Guid> orgUnitIds)
+    public EmployeesInOrgUnitsSpec(ISet<int> orgUnitIds)
         {
             Where(e => orgUnitIds.Contains(e.OrgUnitId));
             EnableNoTracking();
@@ -62,7 +62,7 @@ internal sealed class GetLeaveRequestsForManagerQueryHandler(
     private sealed class LeavesByEmployeesSpec
         : Application.Specifications.BaseSpecification<LeaveRequest>
     {
-        public LeavesByEmployeesSpec(ISet<Guid> employeeIds)
+    public LeavesByEmployeesSpec(ISet<int> employeeIds)
         {
             Where(l => employeeIds.Contains(l.EmployeeId));
             ApplyOrderByDescending(l => l.Period.Start);

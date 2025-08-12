@@ -5,7 +5,7 @@ namespace HrSystem.Application.Specifications.OrgTypes;
 // By Id
 public sealed class OrgTypeByIdSpecification : BaseSpecification<OrgType>
 {
-    public OrgTypeByIdSpecification(System.Guid id)
+    public OrgTypeByIdSpecification(int id)
         : base(t => t.Id == id)
     {
         EnableNoTracking();

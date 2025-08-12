@@ -12,9 +12,9 @@ public sealed class LeaveRequestsController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
-    [HttpGet("manager/{managerId:guid}")]
+    [HttpGet("manager/{managerId:int}")]
     public async Task<ActionResult<IReadOnlyList<LeaveRequestDto>>> ForManager(
-        Guid managerId,
+        int managerId,
         CancellationToken ct
     )
     {
@@ -32,15 +32,15 @@ public sealed class LeaveRequestsController(IMediator mediator) : ControllerBase
         return CreatedAtAction(nameof(ForManager), new { managerId = command.EmployeeId }, new { id });
     }
 
-    [HttpPost("{id:guid}/approve")]
-    public async Task<IActionResult> Approve(Guid id, CancellationToken ct)
+    [HttpPost("{id:int}/approve")]
+    public async Task<IActionResult> Approve(int id, CancellationToken ct)
     {
         await _mediator.Send(new ApproveLeaveRequestCommand(id), ct);
         return NoContent();
     }
 
-    [HttpPost("{id:guid}/reject")]
-    public async Task<IActionResult> Reject(Guid id, CancellationToken ct)
+    [HttpPost("{id:int}/reject")]
+    public async Task<IActionResult> Reject(int id, CancellationToken ct)
     {
         await _mediator.Send(new RejectLeaveRequestCommand(id), ct);
         return NoContent();
