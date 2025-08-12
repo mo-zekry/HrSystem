@@ -1,0 +1,120 @@
+############################################
+# HrSystem API HTTP Tests
+# Adjust variables below as needed.
+############################################
+
+@baseUrl = http://localhost:5041
+@token = {{token}}
+
+# Common IDs (set these to real IDs in your database before running requests)
+@employeeId = 00000000-0000-0000-0000-000000000000
+@orgUnitId = 00000000-0000-0000-0000-000000000000
+@rootOrgUnitId = 00000000-0000-0000-0000-000000000000
+@managerId = 00000000-0000-0000-0000-000000000000
+@orgTypeId = 00000000-0000-0000-0000-000000000000
+@leaveRequestId = 00000000-0000-0000-0000-000000000000
+
+### Employees - Get by Id
+GET {{baseUrl}}/api/Employees/{{employeeId}}
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Employees - Get paged
+GET {{baseUrl}}/api/Employees?page=1&pageSize=20&orgUnitId={{orgUnitId}}&searchTerm=smith
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Employees - Create
+POST {{baseUrl}}/api/Employees
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+	"firstName": "John",
+	"lastName": "Doe",
+	"email": "john.doe@example.com",
+	"hireDate": "2024-01-15",
+	"orgUnitId": "{{orgUnitId}}"
+}
+
+### Employees - Update
+PUT {{baseUrl}}/api/Employees/{{employeeId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+	"id": "{{employeeId}}",
+	"firstName": "Johnny",
+	"lastName": "Doe",
+	"email": "johnny.doe@example.com",
+	"orgUnitId": "{{orgUnitId}}"
+}
+
+### Employees - Deactivate
+POST {{baseUrl}}/api/Employees/{{employeeId}}/deactivate
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### OrgUnits - Get hierarchy
+GET {{baseUrl}}/api/OrgUnits/hierarchy?rootId={{rootOrgUnitId}}
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### OrgUnits - Create
+POST {{baseUrl}}/api/OrgUnits
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+	"name": "Engineering",
+	"orgTypeId": "{{orgTypeId}}",
+	"parentId": null,
+	"managerId": "{{managerId}}"
+}
+
+### OrgUnits - Update
+PUT {{baseUrl}}/api/OrgUnits/{{orgUnitId}}
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+	"id": "{{orgUnitId}}",
+	"name": "Engineering - Updated",
+	"orgTypeId": "{{orgTypeId}}",
+	"parentId": null,
+	"managerId": "{{managerId}}"
+}
+
+### LeaveRequests - For manager
+GET {{baseUrl}}/api/LeaveRequests/manager/{{managerId}}
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### LeaveRequests - Create
+POST {{baseUrl}}/api/LeaveRequests
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+	"employeeId": "{{employeeId}}",
+	"startDate": "2024-08-01",
+	"endDate": "2024-08-10",
+	"reason": "Vacation"
+}
+
+### LeaveRequests - Approve
+POST {{baseUrl}}/api/LeaveRequests/{{leaveRequestId}}/approve
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### LeaveRequests - Reject
+POST {{baseUrl}}/api/LeaveRequests/{{leaveRequestId}}/reject
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
