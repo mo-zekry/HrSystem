@@ -6,7 +6,7 @@ namespace HrSystem.Application.Specifications.Employees;
 // Get by Id
 public sealed class EmployeeByIdSpecification : BaseSpecification<Employee>
 {
-    public EmployeeByIdSpecification(Guid id)
+    public EmployeeByIdSpecification(int id)
         : base(e => e.Id == id)
     {
         EnableNoTracking();
@@ -26,7 +26,7 @@ public sealed class EmployeeByEmailSpecification : BaseSpecification<Employee>
 // Employees in an OrgUnit
 public sealed class EmployeesByOrgUnitSpecification : BaseSpecification<Employee>
 {
-    public EmployeesByOrgUnitSpecification(Guid orgUnitId)
+    public EmployeesByOrgUnitSpecification(int orgUnitId)
         : base(e => e.OrgUnitId == orgUnitId)
     {
         ApplyOrderBy(e => e.LastName);

@@ -2,7 +2,7 @@ namespace HrSystem.Domain.Abstractions;
 
 public abstract class BaseEntity
 {
-    public Guid Id { get; protected set; }
+    public int Id { get; protected set; }
     public DateTime CreatedDate { get; protected set; }
     public DateTime? UpdatedDate { get; protected set; }
 
@@ -11,7 +11,6 @@ public abstract class BaseEntity
 
     protected BaseEntity()
     {
-        Id = Guid.NewGuid();
         CreatedDate = DateTime.UtcNow;
     }
 

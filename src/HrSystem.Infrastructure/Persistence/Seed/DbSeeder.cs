@@ -48,15 +48,23 @@ public static class DbSeeder
                 .Select(x => x.Id)
                 .FirstAsync(cancellationToken);
 
+            // 1) Root
             var corpDiv = new OrgUnit("Corporate", divisionTypeId);
+            await db.OrgUnits.AddAsync(corpDiv, cancellationToken);
+            await db.SaveChangesAsync(cancellationToken);
+
+            // 2) Departments under Corporate
             var engDept = new OrgUnit("Engineering", departmentTypeId, parentId: corpDiv.Id);
             var salesDept = new OrgUnit("Sales", departmentTypeId, parentId: corpDiv.Id);
+            await db.OrgUnits.AddRangeAsync(new[] { engDept, salesDept }, cancellationToken);
+            await db.SaveChangesAsync(cancellationToken);
+
+            // 3) Teams under departments
             var platformTeam = new OrgUnit("Platform", teamTypeId, parentId: engDept.Id);
             var appsTeam = new OrgUnit("Applications", teamTypeId, parentId: engDept.Id);
             var emeaSalesTeam = new OrgUnit("EMEA Sales", teamTypeId, parentId: salesDept.Id);
-
             await db.OrgUnits.AddRangeAsync(
-                new[] { corpDiv, engDept, salesDept, platformTeam, appsTeam, emeaSalesTeam },
+                new[] { platformTeam, appsTeam, emeaSalesTeam },
                 cancellationToken
             );
             await db.SaveChangesAsync(cancellationToken);

@@ -5,13 +5,13 @@ namespace HrSystem.Domain.Entities;
 public class OrgUnit : BaseEntity, IAggregateRoot
 {
     public string Name { get; set; } = null!;
-    public Guid OrgTypeId { get; set; }
-    public Guid? ParentId { get; set; }
-    public Guid? ManagerId { get; set; }
+    public int OrgTypeId { get; set; }
+    public int? ParentId { get; set; }
+    public int? ManagerId { get; set; }
 
     private OrgUnit() { }
 
-    public OrgUnit(string name, Guid orgTypeId, Guid? parentId = null, Guid? managerId = null)
+    public OrgUnit(string name, int orgTypeId, int? parentId = null, int? managerId = null)
     {
         Name = name;
         OrgTypeId = orgTypeId;

@@ -1,10 +1,10 @@
 namespace HrSystem.Application.Dtos.OrgUnits;
 
 public sealed record OrgUnitNodeDto(
-    Guid Id,
+    int Id,
     string Name,
-    Guid OrgTypeId,
-    Guid? ParentId,
-    Guid? ManagerId,
+    int OrgTypeId,
+    int? ParentId,
+    int? ManagerId,
     IReadOnlyList<OrgUnitNodeDto> Children
 );

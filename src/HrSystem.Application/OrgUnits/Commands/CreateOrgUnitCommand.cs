@@ -6,17 +6,17 @@ namespace HrSystem.Application.OrgUnits.Commands;
 
 public sealed record CreateOrgUnitCommand(
     string Name,
-    Guid OrgTypeId,
-    Guid? ParentId,
-    Guid? ManagerId
-) : IRequest<Guid>;
+    int OrgTypeId,
+    int? ParentId,
+    int? ManagerId
+) : IRequest<int>;
 
 internal sealed class CreateOrgUnitCommandHandler(IRepository<OrgUnit> repository)
-    : IRequestHandler<CreateOrgUnitCommand, Guid>
+    : IRequestHandler<CreateOrgUnitCommand, int>
 {
     private readonly IRepository<OrgUnit> _repository = repository;
 
-    public async Task<Guid> Handle(
+    public async Task<int> Handle(
         CreateOrgUnitCommand request,
         CancellationToken cancellationToken
     )

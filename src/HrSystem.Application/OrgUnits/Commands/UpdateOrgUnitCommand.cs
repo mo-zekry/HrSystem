@@ -5,11 +5,11 @@ using MediatR;
 namespace HrSystem.Application.OrgUnits.Commands;
 
 public sealed record UpdateOrgUnitCommand(
-    Guid Id,
+    int Id,
     string Name,
-    Guid OrgTypeId,
-    Guid? ParentId,
-    Guid? ManagerId
+    int OrgTypeId,
+    int? ParentId,
+    int? ManagerId
 ) : IRequest;
 
 internal sealed class UpdateOrgUnitCommandHandler(IRepository<OrgUnit> repository)

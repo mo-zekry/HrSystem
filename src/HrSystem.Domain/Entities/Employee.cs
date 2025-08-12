@@ -9,7 +9,7 @@ public class Employee : BaseEntity, IAggregateRoot
     public string LastName { get; set; } = null!;
     public string Email { get; set; } = null!;
     public DateOnly HireDate { get; set; }
-    public Guid OrgUnitId { get; set; }
+    public int OrgUnitId { get; set; }
     public EmployeeStatus Status { get; set; }
 
     private Employee() { }
@@ -19,7 +19,7 @@ public class Employee : BaseEntity, IAggregateRoot
         string lastName,
         string email,
         DateOnly hireDate,
-        Guid orgUnitId,
+        int orgUnitId,
         EmployeeStatus status = EmployeeStatus.Active
     )
     {

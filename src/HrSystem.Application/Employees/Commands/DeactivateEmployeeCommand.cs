@@ -5,7 +5,7 @@ using MediatR;
 
 namespace HrSystem.Application.Employees.Commands;
 
-public sealed record DeactivateEmployeeCommand(Guid Id) : IRequest;
+public sealed record DeactivateEmployeeCommand(int Id) : IRequest;
 
 internal sealed class DeactivateEmployeeCommandHandler(IRepository<Employee> repository)
     : IRequestHandler<DeactivateEmployeeCommand>

@@ -10,7 +10,7 @@ namespace HrSystem.Application.Employees.Queries;
 public sealed record GetEmployeesPagedQuery(
     int Page,
     int PageSize,
-    Guid? OrgUnitId,
+    int? OrgUnitId,
     string? SearchTerm
 ) : IRequest<PagedResultDto<EmployeeDto>>;
 
@@ -40,9 +40,9 @@ internal sealed class GetEmployeesPagedQueryHandler(IRepository<Employee> reposi
 
     private sealed class InlineSpec : Application.Specifications.BaseSpecification<Employee>
     {
-        public InlineSpec(Guid? orgUnitId, string? searchTerm, int? page, int? pageSize)
+        public InlineSpec(int? orgUnitId, string? searchTerm, int? page, int? pageSize)
         {
-            if (orgUnitId is Guid ou && !string.IsNullOrWhiteSpace(searchTerm))
+            if (orgUnitId is int ou && !string.IsNullOrWhiteSpace(searchTerm))
             {
                 var term = searchTerm.Trim();
                 Where(e =>
@@ -50,7 +50,7 @@ internal sealed class GetEmployeesPagedQueryHandler(IRepository<Employee> reposi
                     && ((e.FirstName + " " + e.LastName).Contains(term) || e.Email.Contains(term))
                 );
             }
-            else if (orgUnitId is Guid onlyOu)
+            else if (orgUnitId is int onlyOu)
             {
                 Where(e => e.OrgUnitId == onlyOu);
             }

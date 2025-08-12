@@ -10,15 +10,15 @@ public sealed record CreateEmployeeCommand(
     string LastName,
     string Email,
     DateOnly HireDate,
-    Guid OrgUnitId
-) : IRequest<Guid>;
+    int OrgUnitId
+) : IRequest<int>;
 
 internal sealed class CreateEmployeeCommandHandler(IRepository<Employee> repository)
-    : IRequestHandler<CreateEmployeeCommand, Guid>
+    : IRequestHandler<CreateEmployeeCommand, int>
 {
     private readonly IRepository<Employee> _repository = repository;
 
-    public async Task<Guid> Handle(
+    public async Task<int> Handle(
         CreateEmployeeCommand request,
         CancellationToken cancellationToken
     )

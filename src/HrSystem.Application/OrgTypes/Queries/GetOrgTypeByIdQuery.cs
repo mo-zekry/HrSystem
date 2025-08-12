@@ -7,7 +7,7 @@ using MediatR;
 
 namespace HrSystem.Application.OrgTypes.Queries;
 
-public sealed record GetOrgTypeByIdQuery(Guid Id) : IRequest<OrgTypeDto?>;
+public sealed record GetOrgTypeByIdQuery(int Id) : IRequest<OrgTypeDto?>;
 
 internal sealed class GetOrgTypeByIdQueryHandler(IRepository<OrgType> repository)
     : IRequestHandler<GetOrgTypeByIdQuery, OrgTypeDto?>

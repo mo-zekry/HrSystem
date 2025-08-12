@@ -5,7 +5,7 @@ namespace HrSystem.Application.Specifications.OrgUnits;
 // By Id
 public sealed class OrgUnitByIdSpecification : BaseSpecification<OrgUnit>
 {
-    public OrgUnitByIdSpecification(Guid id)
+    public OrgUnitByIdSpecification(int id)
         : base(o => o.Id == id)
     {
         EnableNoTracking();
@@ -15,7 +15,7 @@ public sealed class OrgUnitByIdSpecification : BaseSpecification<OrgUnit>
 // Children of a parent org unit
 public sealed class OrgUnitChildrenSpecification : BaseSpecification<OrgUnit>
 {
-    public OrgUnitChildrenSpecification(Guid parentId)
+    public OrgUnitChildrenSpecification(int parentId)
         : base(o => o.ParentId == parentId)
     {
         ApplyOrderBy(o => o.Name);
@@ -26,7 +26,7 @@ public sealed class OrgUnitChildrenSpecification : BaseSpecification<OrgUnit>
 // By org type
 public sealed class OrgUnitsByTypeSpecification : BaseSpecification<OrgUnit>
 {
-    public OrgUnitsByTypeSpecification(Guid orgTypeId)
+    public OrgUnitsByTypeSpecification(int orgTypeId)
         : base(o => o.OrgTypeId == orgTypeId)
     {
         ApplyOrderBy(o => o.Name);
@@ -37,7 +37,7 @@ public sealed class OrgUnitsByTypeSpecification : BaseSpecification<OrgUnit>
 // With optional manager
 public sealed class OrgUnitsManagedBySpecification : BaseSpecification<OrgUnit>
 {
-    public OrgUnitsManagedBySpecification(Guid managerId)
+    public OrgUnitsManagedBySpecification(int managerId)
         : base(o => o.ManagerId == managerId)
     {
         ApplyOrderBy(o => o.Name);
