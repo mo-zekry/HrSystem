@@ -6,6 +6,7 @@ namespace HrSystem.Application.Repositories;
 public interface IRepository<T>
     where T : BaseEntity, IAggregateRoot
 {
+
     Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
 
     // All list/count methods accept a specification

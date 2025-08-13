@@ -19,5 +19,11 @@ public class OrgTypeConfiguration : IEntityTypeConfiguration<OrgType>
         builder.Property(o => o.UpdatedDate);
 
         builder.HasIndex(o => o.Name).IsUnique();
+
+        builder
+            .HasMany(ot => ot.OrgUnits)
+            .WithOne(ou => ou.OrgType)
+            .HasForeignKey(ou => ou.OrgTypeId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

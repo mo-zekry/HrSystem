@@ -43,16 +43,16 @@ internal sealed class GetLeaveRequestsForManagerQueryHandler(
 
     private sealed class ManagedBySpec : Application.Specifications.BaseSpecification<OrgUnit>
     {
-    public ManagedBySpec(int managerId)
+        public ManagedBySpec(int managerId)
         {
-            Where(o => o.ManagerId == managerId);
+            Where(o => o.Managers.Any(um => um.EmployeeId == managerId));
             EnableNoTracking();
         }
     }
 
     private sealed class EmployeesInOrgUnitsSpec : Specifications.BaseSpecification<Employee>
     {
-    public EmployeesInOrgUnitsSpec(ISet<int> orgUnitIds)
+        public EmployeesInOrgUnitsSpec(ISet<int> orgUnitIds)
         {
             Where(e => orgUnitIds.Contains(e.OrgUnitId));
             EnableNoTracking();
@@ -62,7 +62,7 @@ internal sealed class GetLeaveRequestsForManagerQueryHandler(
     private sealed class LeavesByEmployeesSpec
         : Application.Specifications.BaseSpecification<LeaveRequest>
     {
-    public LeavesByEmployeesSpec(ISet<int> employeeIds)
+        public LeavesByEmployeesSpec(ISet<int> employeeIds)
         {
             Where(l => employeeIds.Contains(l.EmployeeId));
             ApplyOrderByDescending(l => l.Period.Start);

@@ -9,8 +9,12 @@ public sealed record CreateEmployeeCommand(
     string FirstName,
     string LastName,
     string Email,
+    string PositionArabic,
+    string PositionEnglish,
     DateOnly HireDate,
-    int OrgUnitId
+    int OrgUnitId,
+    EmployeeStatus Status,
+    IReadOnlyCollection<int> ManagedOrgUnitIds
 ) : IRequest<int>;
 
 internal sealed class CreateEmployeeCommandHandler(IRepository<Employee> repository)
@@ -27,10 +31,21 @@ internal sealed class CreateEmployeeCommandHandler(IRepository<Employee> reposit
             request.FirstName,
             request.LastName,
             request.Email,
+            request.PositionArabic,
+            request.PositionEnglish,
             request.HireDate,
             request.OrgUnitId,
-            EmployeeStatus.Active
+            request.Status
         );
+
+        // Set managed units if provided
+        if (request.ManagedOrgUnitIds != null && request.ManagedOrgUnitIds.Count > 0)
+        {
+            foreach (var unitId in request.ManagedOrgUnitIds)
+            {
+                employee.ManagedUnits.Add(new UnitsManagers(unitId, 0)); // EmployeeId will be set after save
+            }
+        }
 
         await _repository.AddAsync(employee, cancellationToken);
         return employee.Id;

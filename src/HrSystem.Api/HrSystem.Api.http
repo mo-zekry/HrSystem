@@ -7,12 +7,12 @@
 @token = {{token}}
 
 # Common IDs (set these to real IDs in your database before running requests)
-@employeeId = 00000000-0000-0000-0000-000000000000
-@orgUnitId = 00000000-0000-0000-0000-000000000000
-@rootOrgUnitId = 00000000-0000-0000-0000-000000000000
-@managerId = 00000000-0000-0000-0000-000000000000
-@orgTypeId = 00000000-0000-0000-0000-000000000000
-@leaveRequestId = 00000000-0000-0000-0000-000000000000
+@employeeId = 0
+@orgUnitId = 0
+@rootOrgUnitId = 0
+@managerId = 0
+@orgTypeId = 0
+@leaveRequestId = 0
 
 ### Employees - Get by Id
 GET {{baseUrl}}/api/Employees/{{employeeId}}

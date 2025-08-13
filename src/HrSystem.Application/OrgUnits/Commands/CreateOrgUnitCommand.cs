@@ -8,7 +8,7 @@ public sealed record CreateOrgUnitCommand(
     string Name,
     int OrgTypeId,
     int? ParentId,
-    int? ManagerId
+    IReadOnlyCollection<int> ManagerIds
 ) : IRequest<int>;
 
 internal sealed class CreateOrgUnitCommandHandler(IRepository<OrgUnit> repository)
@@ -16,17 +16,19 @@ internal sealed class CreateOrgUnitCommandHandler(IRepository<OrgUnit> repositor
 {
     private readonly IRepository<OrgUnit> _repository = repository;
 
-    public async Task<int> Handle(
-        CreateOrgUnitCommand request,
-        CancellationToken cancellationToken
-    )
+    public async Task<int> Handle(CreateOrgUnitCommand request, CancellationToken cancellationToken)
     {
-        var orgUnit = new OrgUnit(
-            request.Name,
-            request.OrgTypeId,
-            request.ParentId,
-            request.ManagerId
-        );
+        var orgUnit = new OrgUnit(request.Name, request.OrgTypeId, request.ParentId);
+
+        // Add all provided managers to the OrgUnit's Managers collection
+        if (request.ManagerIds != null)
+        {
+            foreach (var managerId in request.ManagerIds)
+            {
+                orgUnit.Managers.Add(new UnitsManagers(orgUnit.Id, managerId));
+            }
+        }
+
         await _repository.AddAsync(orgUnit, cancellationToken);
         return orgUnit.Id;
     }

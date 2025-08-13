@@ -4,21 +4,35 @@ using HrSystem.Application.OrgUnits.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HrSystem.Api.Controllers;
-
 [ApiController]
 [Route("api/[controller]")]
-public sealed class OrgUnitsController(IMediator mediator) : ControllerBase
+public sealed class OrgUnitsController : ControllerBase
 {
-    private readonly IMediator _mediator = mediator;
+    private readonly IMediator _mediator;
+
+    public OrgUnitsController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
+    [HttpGet("to-root/{orgUnitId:int}")]
+    public async Task<ActionResult<IReadOnlyList<OrgUnitDto>>> GetToRoot(
+        int orgUnitId,
+        CancellationToken ct
+    )
+    {
+        var result = await _mediator.Send(new GetOrgUnitToRootQuery(orgUnitId), ct);
+        return Ok(result);
+    }
 
     [HttpGet("hierarchy")]
     public async Task<ActionResult<IReadOnlyList<OrgUnitNodeDto>>> GetHierarchy(
-    [FromQuery] int? rootId,
+        [FromQuery] int? rootId,
         CancellationToken ct
     )
     {
         var result = await _mediator.Send(new GetOrgUnitsHierarchyQuery(rootId), ct);
+        // In future, enrich result with OrgTypeName, manager details, employee count, etc.
         return Ok(result);
     }
 

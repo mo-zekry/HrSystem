@@ -8,8 +8,16 @@ internal sealed class CreateOrgUnitCommandValidator : AbstractValidator<CreateOr
     {
         RuleFor(x => x.Name).NotEmpty().MaximumLength(200);
         RuleFor(x => x.OrgTypeId).NotEmpty();
-        // ParentId and ManagerId are optional; when provided must be non-empty
+        // ParentId is optional; when provided must be non-empty
         When(x => x.ParentId.HasValue, () => RuleFor(x => x.ParentId!.Value).NotEmpty());
-        When(x => x.ManagerId.HasValue, () => RuleFor(x => x.ManagerId!.Value).NotEmpty());
+
+        // ManagerIds is optional; when provided, all must be non-empty
+        When(
+            x => x.ManagerIds != null,
+            () =>
+            {
+                RuleForEach(x => x.ManagerIds!).NotEmpty();
+            }
+        );
     }
 }

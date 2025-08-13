@@ -9,17 +9,23 @@ namespace HrSystem.Application.Dtos.Mapping;
 
 public static class MappingExtensions
 {
+    public static IReadOnlyList<OrgUnitDto> ToDto(this IEnumerable<OrgUnit> orgUnits) =>
+        orgUnits.Select(o => o.ToDto()).ToList();
+
     public static EmployeeDto ToDto(this Employee e) =>
         new(
             e.Id,
             e.FirstName,
             e.LastName,
             e.Email,
+            e.PositionArabic,
+            e.PositionEnglish,
             e.HireDate,
             e.OrgUnitId,
             e.Status,
             e.CreatedDate,
-            e.UpdatedDate
+            e.UpdatedDate,
+            e.ManagedUnits.Select(mu => mu.OrgUnitId).ToList()
         );
 
     public static IReadOnlyList<EmployeeDto> ToDto(this IEnumerable<Employee> employees) =>
@@ -41,12 +47,38 @@ public static class MappingExtensions
         leaves.Select(l => l.ToDto()).ToList();
 
     public static OrgUnitDto ToDto(this OrgUnit o) =>
-        new(o.Id, o.Name, o.OrgTypeId, o.ParentId, o.ManagerId, o.CreatedDate, o.UpdatedDate);
+        new(
+            o.Id,
+            o.Name,
+            o.OrgTypeId,
+            o.ParentId,
+            o.Managers.Select(m => m.EmployeeId).ToList(),
+            o.CreatedDate,
+            o.UpdatedDate
+        );
 
     public static OrgUnitNodeDto ToNodeDto(
         this OrgUnit o,
-        IReadOnlyList<OrgUnitNodeDto> children
-    ) => new(o.Id, o.Name, o.OrgTypeId, o.ParentId, o.ManagerId, children);
+        IReadOnlyList<OrgUnitNodeDto> children,
+        string? orgTypeName = null,
+        IReadOnlyCollection<OrgUnitManagerDto>? managers = null,
+        int employeeCount = 0
+    ) =>
+        new(
+            o.Id,
+            o.Name,
+            o.OrgTypeId,
+            orgTypeName ?? o.OrgType?.Name ?? string.Empty,
+            o.ParentId,
+            managers ?? o.Managers.Select(m => new OrgUnitManagerDto(
+                m.Employee.Id,
+                m.Employee.FirstName,
+                m.Employee.LastName,
+                m.Employee.Email
+            )).ToList(),
+            children,
+            employeeCount
+        );
 
     public static OrgTypeDto ToDto(this OrgType t) =>
         new(t.Id, t.Name, t.CreatedDate, t.UpdatedDate);

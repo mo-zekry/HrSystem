@@ -7,9 +7,12 @@ public sealed record EmployeeDto(
     string FirstName,
     string LastName,
     string Email,
+    string PositionArabic,
+    string PositionEnglish,
     DateOnly HireDate,
     int OrgUnitId,
     EmployeeStatus Status,
     DateTime CreatedDate,
-    DateTime? UpdatedDate
+    DateTime? UpdatedDate,
+    IReadOnlyCollection<int> ManagedOrgUnitIds
 );

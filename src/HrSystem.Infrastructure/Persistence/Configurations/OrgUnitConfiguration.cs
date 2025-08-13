@@ -20,22 +20,22 @@ public class OrgUnitConfiguration : IEntityTypeConfiguration<OrgUnit>
 
         // Relations
         builder
-            .HasOne<OrgType>()
-            .WithMany()
+            .HasOne(o => o.OrgType)
+            .WithMany(ot => ot.OrgUnits)
             .HasForeignKey(o => o.OrgTypeId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .HasOne<OrgUnit>()
-            .WithMany()
+            .HasOne(o => o.Parent)
+            .WithMany(o => o.Children)
             .HasForeignKey(o => o.ParentId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .HasOne<Employee>()
-            .WithMany()
-            .HasForeignKey(o => o.ManagerId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .HasMany(o => o.Managers)
+            .WithOne(um => um.OrgUnit)
+            .HasForeignKey(um => um.OrgUnitId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasIndex(x => new { x.Name, x.OrgTypeId }).IsUnique();
     }
