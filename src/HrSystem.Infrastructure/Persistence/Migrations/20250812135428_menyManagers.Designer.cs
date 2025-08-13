@@ -3,6 +3,7 @@ using System;
 using HrSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HrSystem.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(HrSystemDbContext))]
-    partial class HrSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250812135428_menyManagers")]
+    partial class menyManagers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -209,48 +212,48 @@ namespace HrSystem.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HrSystem.Domain.Entities.UnitsManagers", b =>
                 {
-                    b.Property<int>("OrgUnitId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OrgUnitId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("OrgUnitId", "EmployeeId");
+                    b.HasKey("Id");
 
                     b.HasIndex("EmployeeId");
 
-                    b.ToTable("units_managers", (string)null);
+                    b.HasIndex("OrgUnitId");
+
+                    b.ToTable("UnitsManagers");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.Employee", b =>
                 {
-                    b.HasOne("HrSystem.Domain.Entities.OrgUnit", "OrgUnit")
+                    b.HasOne("HrSystem.Domain.Entities.OrgUnit", null)
                         .WithMany()
                         .HasForeignKey("OrgUnitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("OrgUnit");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.LeaveRequest", b =>
                 {
-                    b.HasOne("HrSystem.Domain.Entities.Employee", "Employee")
+                    b.HasOne("HrSystem.Domain.Entities.Employee", null)
                         .WithMany()
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.OwnsOne("HrSystem.Domain.ValueObjects.DateRange", "Period", b1 =>
@@ -274,28 +277,22 @@ namespace HrSystem.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("LeaveRequestId");
                         });
 
-                    b.Navigation("Employee");
-
                     b.Navigation("Period")
                         .IsRequired();
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.OrgUnit", b =>
                 {
-                    b.HasOne("HrSystem.Domain.Entities.OrgType", "OrgType")
-                        .WithMany("OrgUnits")
+                    b.HasOne("HrSystem.Domain.Entities.OrgType", null)
+                        .WithMany()
                         .HasForeignKey("OrgTypeId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("HrSystem.Domain.Entities.OrgUnit", "Parent")
-                        .WithMany("Children")
+                    b.HasOne("HrSystem.Domain.Entities.OrgUnit", null)
+                        .WithMany()
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("OrgType");
-
-                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("HrSystem.Domain.Entities.UnitsManagers", b =>
@@ -322,15 +319,8 @@ namespace HrSystem.Infrastructure.Persistence.Migrations
                     b.Navigation("ManagedUnits");
                 });
 
-            modelBuilder.Entity("HrSystem.Domain.Entities.OrgType", b =>
-                {
-                    b.Navigation("OrgUnits");
-                });
-
             modelBuilder.Entity("HrSystem.Domain.Entities.OrgUnit", b =>
                 {
-                    b.Navigation("Children");
-
                     b.Navigation("Managers");
                 });
 #pragma warning restore 612, 618

@@ -34,11 +34,11 @@ internal sealed class GetEmployeesPagedQueryHandler(IRepository<Employee> reposi
         var items = await _repository.ListAsync(spec, cancellationToken);
         // same filters for count but without paging
         var countSpec = new InlineSpec(request.OrgUnitId, request.SearchTerm, null, null);
-    var total = await _repository.CountAsync(countSpec, cancellationToken);
-    return (items, total, request.Page, request.PageSize).ToPagedDto(e => e.ToDto());
+        var total = await _repository.CountAsync(countSpec, cancellationToken);
+        return (items, total, request.Page, request.PageSize).ToPagedDto(e => e.ToDto());
     }
 
-    private sealed class InlineSpec : Application.Specifications.BaseSpecification<Employee>
+    private sealed class InlineSpec : Specifications.BaseSpecification<Employee>
     {
         public InlineSpec(int? orgUnitId, string? searchTerm, int? page, int? pageSize)
         {

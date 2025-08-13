@@ -2,8 +2,8 @@ using HrSystem.Application.Dtos.Employees;
 using HrSystem.Application.Dtos.Mapping;
 using HrSystem.Application.Repositories;
 using HrSystem.Application.Specifications.Employees;
-using MediatR;
 using HrSystem.Domain.Entities;
+using MediatR;
 
 namespace HrSystem.Application.Employees.Queries;
 

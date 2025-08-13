@@ -13,59 +13,6 @@ internal sealed class GetOrgUnitsHierarchyQueryHandler(IRepository<OrgUnit> repo
 {
     private readonly IRepository<OrgUnit> _repository = repository;
 
-    // Example of a CTE-based implementation for Postgres SQL
-
-    /*
-        public async Task<IReadOnlyList<OrgUnitNodeDto>> Handle(
-            GetOrgUnitsHierarchyQuery request,
-            CancellationToken cancellationToken
-        )
-        {
-            // Fetch all org units once; hierarchy building is in-memory
-            var all = await _repository.ListAsync(new AllSpec(), cancellationToken);
-
-            IEnumerable<OrgUnit> roots = request.RootId is int rootId
-                ? all.Where(o => o.Id == rootId)
-                : all.Where(o => o.ParentId == null);
-
-            var lookup = all.ToLookup(o => o.ParentId);
-
-            List<OrgUnitNodeDto> Build(int? parentId)
-            {
-                return lookup[parentId]
-                    .OrderBy(o => o.Name)
-                    .Select(o => new OrgUnitNodeDto(
-                        o.Id,
-                        o.Name,
-                        o.OrgTypeId,
-                        o.ParentId,
-                        o.ManagerId,
-                        Build(o.Id)
-                    ))
-                    .ToList();
-            }
-
-            if (request.RootId is int)
-            {
-                return Build(request.RootId);
-            }
-
-            return Build(null);
-        }
-
-        private sealed class AllSpec : Specifications.BaseSpecification<OrgUnit>
-        {
-            public AllSpec()
-            {
-                ApplyOrderBy(o => o.Name);
-                EnableNoTracking();
-            }
-        }
-    */
-
-    // ===================================================
-
-    // Example of a CTE-based implementation for Postgress Sql
     public async Task<IReadOnlyList<OrgUnitNodeDto>> Handle(
         GetOrgUnitsHierarchyQuery request,
         CancellationToken ct
@@ -73,44 +20,91 @@ internal sealed class GetOrgUnitsHierarchyQueryHandler(IRepository<OrgUnit> repo
     {
         var rootId = request.RootId;
 
-    var rows = await _repository.FromSqlToListAsync<OrgUnitFlat>(
-        $@"
-        WITH RECURSIVE cte AS (
-            SELECT
-                ou.""Id"" AS Id, ou.""Name"" AS Name, ou.""OrgTypeId"" AS OrgTypeId,
-                ou.""ParentId"" AS ParentId, ou.""ManagerId"" AS ManagerId,
-                0 AS Depth,
-                ARRAY[ou.""Id""]::int[] AS Path
-        FROM ""org_units"" ou
-            WHERE
-                ({rootId} IS NULL AND ou.""ParentId"" IS NULL)
-                OR (ou.""Id"" = {rootId})
+        // postgresql query to get org units with extra fields
+        var rows = await _repository.FromSqlToListAsync<OrgUnitFlatWithManagers>(
+            $@"
+                WITH RECURSIVE cte AS (
+                    SELECT
+                        ou.""Id"" AS Id,
+                        ou.""Name"" AS Name,
+                        ou.""OrgTypeId"" AS OrgTypeId,
+                        ot.""Name"" AS OrgTypeName,
+                        ou.""ParentId"" AS ParentId,
+                        0 AS Depth,
+                        ARRAY[ou.""Id""]::int[] AS Path
+                    FROM ""org_units"" ou
+                    JOIN ""org_types"" ot ON ou.""OrgTypeId"" = ot.""Id""
+                    WHERE
+                        ({rootId} IS NULL AND ou.""ParentId"" IS NULL)
+                        OR (ou.""Id"" = {rootId})
 
-            UNION ALL
+                    UNION ALL
 
-            SELECT
-                child.""Id"", child.""Name"", child.""OrgTypeId"", child.""ParentId"", child.""ManagerId"",
-                cte.Depth + 1,
-                cte.Path || child.""Id""
-        FROM ""org_units"" child
-            JOIN cte ON child.""ParentId"" = cte.Id
-        )
-        SELECT Id, Name, OrgTypeId, ParentId, ManagerId, Depth, Path
-        FROM cte
-        ORDER BY Path
-    ", ct);
+                    SELECT
+                        child.""Id"",
+                        child.""Name"",
+                        child.""OrgTypeId"",
+                        ot2.""Name"" AS OrgTypeName,
+                        child.""ParentId"",
+                        cte.Depth + 1,
+                        cte.Path || child.""Id""
+                    FROM ""org_units"" child
+                    JOIN cte ON child.""ParentId"" = cte.Id
+                    JOIN ""org_types"" ot2 ON child.""OrgTypeId"" = ot2.""Id""
+                )
+                SELECT
+                    cte.Id,
+                    cte.Name,
+                    cte.OrgTypeId,
+                    cte.OrgTypeName,
+                    cte.ParentId,
+                    cte.Depth,
+                    cte.Path,
+                    ARRAY(
+                        SELECT um.""EmployeeId"" FROM ""units_managers"" um WHERE um.""OrgUnitId"" = cte.Id
+                    ) AS ManagerIds,
+                    (
+                        SELECT COUNT(*) FROM ""employees"" e WHERE e.""OrgUnitId"" = cte.Id
+                    ) AS EmployeeCount
+                FROM cte
+                ORDER BY cte.Path
+    ",
+            ct
+        );
+
+        // Fetch manager details for all manager ids in one go
+        var allManagerIds = rows.SelectMany(r => r.ManagerIds).Distinct().ToList();
+        var managerEmployees =
+            allManagerIds.Count > 0
+                ? await _repository.FromSqlToListAsync<Employee>(
+                    $"SELECT * FROM \"employees\" WHERE \"Id\" = ANY({allManagerIds.ToArray()})",
+                    ct
+                )
+                : new List<Employee>();
+        var managerLookup = managerEmployees.ToDictionary(e => e.Id);
 
         var byId = new Dictionary<int, OrgUnitNodeDto>(rows.Count);
         var roots = new List<OrgUnitNodeDto>();
         foreach (var r in rows)
         {
+            var managers = r
+                .ManagerIds.Select(mid =>
+                    managerLookup.TryGetValue(mid, out var emp)
+                        ? new OrgUnitManagerDto(emp.Id, emp.FirstName, emp.LastName, emp.Email)
+                        : null
+                )
+                .Where(m => m != null)
+                .ToList();
+
             var node = new OrgUnitNodeDto(
                 r.Id,
                 r.Name,
                 r.OrgTypeId,
+                r.OrgTypeName,
                 r.ParentId,
-                r.ManagerId,
-                new List<OrgUnitNodeDto>()
+                managers,
+                new List<OrgUnitNodeDto>(),
+                r.EmployeeCount
             );
             byId[r.Id] = node;
             if (r.ParentId is int pid && byId.TryGetValue(pid, out var p))
@@ -129,58 +123,4 @@ internal sealed class GetOrgUnitsHierarchyQueryHandler(IRepository<OrgUnit> repo
             Sort(r);
         return roots;
     }
-
-    // Using top-level OrgUnitFlat type (registered as keyless in Infrastructure)
-
-    // ===================================================
-
-    /*
-
-    // breadth-first search implementation
-
-    public async Task<IReadOnlyList<OrgUnitNodeDto>> Handle(
-        GetOrgUnitsHierarchyQuery request, CancellationToken ct)
-    {
-        var rootIds = request.RootId is int rid
-            ? new List<int?> { rid }
-            : new List<int?> { null };
-
-        var childrenMap = new Dictionary<int?, List<OrgUnit>>();
-        var allFetched = new Dictionary<int, OrgUnit>();
-        var frontier = new List<int?>(rootIds);
-
-        while (frontier.Count > 0)
-        {
-            var spec = new ByParentsSpec(frontier);
-            var batch = await _repository.ListAsync(spec, ct);
-
-            foreach (var o in batch)
-            {
-                allFetched[o.Id] = o;
-                if (!childrenMap.TryGetValue(o.ParentId, out var list))
-                    childrenMap[o.ParentId] = list = new List<OrgUnit>();
-                list.Add(o);
-            }
-
-            frontier = batch.Select(b => (int?)b.Id).ToList();
-        }
-
-        List<OrgUnitNodeDto> Build(int? parentId)
-            => (childrenMap.TryGetValue(parentId, out var kids) ? kids : Enumerable.Empty<OrgUnit>())
-               .OrderBy(x => x.Name)
-               .Select(o => new OrgUnitNodeDto(o.Id, o.Name, o.OrgTypeId, o.ParentId, o.ManagerId, Build(o.Id)))
-               .ToList();
-
-        return Build(request.RootId);
-    }
-
-    sealed class ByParentsSpec : Specifications.BaseSpecification<OrgUnit>
-    {
-    public ByParentsSpec(IEnumerable<int?> parents)
-        {
-            Criteria = o => parents.Contains(o.ParentId);
-            EnableNoTracking();
-        }
-    }
-    */
 }

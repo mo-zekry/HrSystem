@@ -7,6 +7,7 @@ namespace HrSystem.Domain.Entities;
 public class LeaveRequest : BaseEntity, IAggregateRoot
 {
     public int EmployeeId { get; set; }
+    public Employee Employee { get; set; } = null!;
     public DateRange Period { get; set; } = null!;
     public string Reason { get; set; } = string.Empty;
     public LeaveRequestStatus Status { get; set; }

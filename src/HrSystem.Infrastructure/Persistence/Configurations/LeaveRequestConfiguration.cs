@@ -34,9 +34,9 @@ public class LeaveRequestConfiguration : IEntityTypeConfiguration<LeaveRequest>
         builder.HasIndex(l => new { l.EmployeeId, l.CreatedDate });
 
         builder
-            .HasOne<Employee>()
+            .HasOne(l => l.Employee)
             .WithMany()
             .HasForeignKey(l => l.EmployeeId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

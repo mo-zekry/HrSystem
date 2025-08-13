@@ -38,9 +38,10 @@ public sealed class OrgUnitsByTypeSpecification : BaseSpecification<OrgUnit>
 public sealed class OrgUnitsManagedBySpecification : BaseSpecification<OrgUnit>
 {
     public OrgUnitsManagedBySpecification(int managerId)
-        : base(o => o.ManagerId == managerId)
+        : base(o => o.Managers.Any(um => um.EmployeeId == managerId))
     {
         ApplyOrderBy(o => o.Name);
         EnableNoTracking();
     }
 }
+

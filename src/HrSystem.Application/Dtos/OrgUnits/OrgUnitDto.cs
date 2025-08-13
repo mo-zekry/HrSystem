@@ -5,7 +5,7 @@ public sealed record OrgUnitDto(
     string Name,
     int OrgTypeId,
     int? ParentId,
-    int? ManagerId,
+    IReadOnlyCollection<int> ManagerIds,
     DateTime CreatedDate,
     DateTime? UpdatedDate
 );

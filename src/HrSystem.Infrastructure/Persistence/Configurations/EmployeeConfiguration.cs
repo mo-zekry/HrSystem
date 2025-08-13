@@ -30,9 +30,15 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
         builder.HasIndex(e => e.OrgUnitId);
 
         builder
-            .HasOne<OrgUnit>()
+            .HasOne(e => e.OrgUnit)
             .WithMany()
             .HasForeignKey(e => e.OrgUnitId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder
+            .HasMany(e => e.ManagedUnits)
+            .WithOne(um => um.Employee)
+            .HasForeignKey(um => um.EmployeeId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

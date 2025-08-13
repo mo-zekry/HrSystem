@@ -10,6 +10,14 @@ internal sealed class UpdateOrgUnitCommandValidator : AbstractValidator<UpdateOr
         RuleFor(x => x.Name).NotEmpty().MaximumLength(200);
         RuleFor(x => x.OrgTypeId).NotEmpty();
         When(x => x.ParentId.HasValue, () => RuleFor(x => x.ParentId!.Value).NotEmpty());
-        When(x => x.ManagerId.HasValue, () => RuleFor(x => x.ManagerId!.Value).NotEmpty());
+
+        // ManagerIds is optional; when provided, all must be non-empty
+        When(
+            x => x.ManagerIds != null,
+            () =>
+            {
+                RuleForEach(x => x.ManagerIds!).NotEmpty();
+            }
+        );
     }
 }
