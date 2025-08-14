@@ -24,10 +24,7 @@ public static class SpecificationEvaluator<T>
         // Includes
         if (specification.Includes is { Count: > 0 } includes)
         {
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
+            specification.Includes.Aggregate(query, (current, include) => current.Include(include));
         }
 
         // Ordering

@@ -17,7 +17,6 @@ public interface ISpecification<T>
     // Paging
     int? Skip { get; }
     int? Take { get; }
-
-    // Whether to apply AsNoTracking or similar behavior in repositories
+    
     bool AsNoTracking { get; }
 }

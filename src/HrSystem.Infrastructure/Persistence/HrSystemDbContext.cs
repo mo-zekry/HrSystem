@@ -1,4 +1,4 @@
-using HrSystem.Application.OrgUnits.Queries;
+using HrSystem.Application.Features.OrgUnits.Queries.Flat;
 using HrSystem.Domain.Abstractions;
 using HrSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;

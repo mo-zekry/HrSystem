@@ -15,7 +15,11 @@ public class EfRepository<T>(HrSystemDbContext dbContext) : IRepository<T>
 
     public async Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        // Uses FindAsync for primary key lookup (no includes/specification here by design)
+        if (id <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(id), "Id must be greater than zero.");
+        }
+
         return await Set.FindAsync([id], cancellationToken);
     }
 
@@ -70,9 +74,10 @@ public class EfRepository<T>(HrSystemDbContext dbContext) : IRepository<T>
         {
             throw new InvalidOperationException(
                 $"Type '{typeof(TQuery).FullName}' is not part of the DbContext model. "
-                    + "Register it (HasNoKey for keyless) in OnModelCreating to use Query<T>()."
+                + "Register it (HasNoKey for keyless) in OnModelCreating to use Query<T>()."
             );
         }
+
         return _dbContext.Set<TQuery>().AsQueryable();
     }
 
@@ -85,9 +90,10 @@ public class EfRepository<T>(HrSystemDbContext dbContext) : IRepository<T>
         {
             throw new InvalidOperationException(
                 $"Type '{typeof(TQuery).FullName}' is not part of the DbContext model. "
-                    + "Register it (HasNoKey for keyless) in OnModelCreating to run FromSql<T>()."
+                + "Register it (HasNoKey for keyless) in OnModelCreating to run FromSql<T>()."
             );
         }
+
         return _dbContext.Set<TQuery>().FromSql(sql);
     }
 

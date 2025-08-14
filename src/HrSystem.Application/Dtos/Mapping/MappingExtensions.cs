@@ -82,7 +82,7 @@ public static class MappingExtensions
 
     public static OrgTypeDto ToDto(this OrgType t) =>
         new(t.Id, t.Name, t.CreatedDate, t.UpdatedDate);
-
+    
     public static PagedResultDto<TDto> ToPagedDto<T, TDto>(
         this (IReadOnlyList<T> Items, int TotalCount, int Page, int PageSize) result,
         System.Func<T, TDto> map

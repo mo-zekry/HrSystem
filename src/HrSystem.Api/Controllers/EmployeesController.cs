@@ -1,7 +1,9 @@
 using HrSystem.Application.Dtos.Common;
 using HrSystem.Application.Dtos.Employees;
-using HrSystem.Application.Employees.Commands;
-using HrSystem.Application.Employees.Queries;
+using HrSystem.Application.Features.Employees.Commands.CreateEmployee;
+using HrSystem.Application.Features.Employees.Commands.DeactivateEmployee;
+using HrSystem.Application.Features.Employees.Commands.UpdateEmployee;
+using HrSystem.Application.Features.Employees.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
