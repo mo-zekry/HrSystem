@@ -1,6 +1,7 @@
 using FluentValidation;
+using HrSystem.Application.Employees.Commands;
 
-namespace HrSystem.Application.Employees.Commands.Validators;
+namespace HrSystem.Application.Features.Employees.Commands.UpdateEmployee.Validators;
 
 internal sealed class UpdateEmployeeCommandValidator : AbstractValidator<UpdateEmployeeCommand>
 {
@@ -13,10 +14,7 @@ internal sealed class UpdateEmployeeCommandValidator : AbstractValidator<UpdateE
         // OrgUnitId is optional; when provided must be a positive value
         When(
             x => x.OrgUnitId.HasValue,
-            () =>
-            {
-                RuleFor(x => x.OrgUnitId!.Value).NotEmpty();
-            }
+            () => { RuleFor(x => x.OrgUnitId!.Value).NotEmpty(); }
         );
     }
 }
