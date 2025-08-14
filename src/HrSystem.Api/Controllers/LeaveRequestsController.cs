@@ -1,6 +1,8 @@
 using HrSystem.Application.Dtos.LeaveRequests;
-using HrSystem.Application.LeaveRequests.Commands;
-using HrSystem.Application.LeaveRequests.Queries;
+using HrSystem.Application.Features.LeaveRequests.Commands.ApproveLeaveRequest;
+using HrSystem.Application.Features.LeaveRequests.Commands.CreateLeaveRequest;
+using HrSystem.Application.Features.LeaveRequests.Commands.RejectLeaveRequest;
+using HrSystem.Application.Features.LeaveRequests.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

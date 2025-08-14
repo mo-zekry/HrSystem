@@ -1,7 +1,7 @@
 using HrSystem.Domain.Enums;
 using MediatR;
 
-namespace HrSystem.Application.Features.Employee.Commands.CreateEmployee.Command;
+namespace HrSystem.Application.Features.Employees.Commands.CreateEmployee;
 
 public sealed record CreateEmployeeCommand(
     string FirstName,

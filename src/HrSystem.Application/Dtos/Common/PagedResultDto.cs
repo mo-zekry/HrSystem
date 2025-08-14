@@ -1,4 +1,4 @@
-namespace HrSystem.Application.Features.Employees.Queries.Response;
+namespace HrSystem.Application.Dtos.Common;
 
 public sealed record PagedResultDto<T>(
     IReadOnlyList<T> Items,

@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace HrSystem.Application.Features.Employees.Commands.UpdateEmployee.Validators;
+namespace HrSystem.Application.Features.Employees.Commands.DeactivateEmployee;
 
 internal sealed class DeactivateEmployeeCommandValidator
     : AbstractValidator<DeactivateEmployeeCommand>

@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace HrSystem.Application.OrgUnits.Commands.Validators;
+namespace HrSystem.Application.Features.OrgUnits.Commands.CreateOrgUnit;
 
 internal sealed class CreateOrgUnitCommandValidator : AbstractValidator<CreateOrgUnitCommand>
 {
@@ -14,10 +14,7 @@ internal sealed class CreateOrgUnitCommandValidator : AbstractValidator<CreateOr
         // ManagerIds is optional; when provided, all must be non-empty
         When(
             x => x.ManagerIds != null,
-            () =>
-            {
-                RuleForEach(x => x.ManagerIds!).NotEmpty();
-            }
+            () => { RuleForEach(x => x.ManagerIds!).NotEmpty(); }
         );
     }
 }

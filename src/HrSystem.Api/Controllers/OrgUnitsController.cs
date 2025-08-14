@@ -1,6 +1,7 @@
 using HrSystem.Application.Dtos.OrgUnits;
-using HrSystem.Application.OrgUnits.Commands;
-using HrSystem.Application.OrgUnits.Queries;
+using HrSystem.Application.Features.OrgUnits.Commands.CreateOrgUnit;
+using HrSystem.Application.Features.OrgUnits.Commands.UpdateOrgUnitCommand;
+using HrSystem.Application.Features.OrgUnits.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,7 +1,6 @@
 using FluentValidation;
-using HrSystem.Application.Features.Employees.Commands.CreateEmployee;
 
-namespace HrSystem.Application.Features.Employees.Commands.CreateEmployee.Validators;
+namespace HrSystem.Application.Features.Employees.Commands.CreateEmployee;
 
 public sealed class CreateEmployeeCommandValidator : AbstractValidator<CreateEmployeeCommand>
 {

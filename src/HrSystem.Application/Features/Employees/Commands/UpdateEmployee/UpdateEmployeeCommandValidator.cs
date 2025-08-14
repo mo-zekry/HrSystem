@@ -1,7 +1,6 @@
 using FluentValidation;
-using HrSystem.Application.Employees.Commands;
 
-namespace HrSystem.Application.Features.Employees.Commands.UpdateEmployee.Validators;
+namespace HrSystem.Application.Features.Employees.Commands.UpdateEmployee;
 
 internal sealed class UpdateEmployeeCommandValidator : AbstractValidator<UpdateEmployeeCommand>
 {

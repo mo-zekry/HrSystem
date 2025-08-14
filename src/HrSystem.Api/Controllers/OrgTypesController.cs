@@ -1,7 +1,8 @@
 using HrSystem.Application.Dtos.Common;
 using HrSystem.Application.Dtos.OrgTypes;
-using HrSystem.Application.OrgTypes.Commands;
-using HrSystem.Application.OrgTypes.Queries;
+using HrSystem.Application.Features.OrgTypes.Commands.CreateOrgType;
+using HrSystem.Application.Features.OrgTypes.Commands.UpdateOrgType;
+using HrSystem.Application.Features.OrgTypes.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

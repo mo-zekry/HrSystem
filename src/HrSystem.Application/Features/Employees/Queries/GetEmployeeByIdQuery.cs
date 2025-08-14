@@ -1,18 +1,17 @@
 using HrSystem.Application.Dtos.Employees;
 using HrSystem.Application.Dtos.Mapping;
+using HrSystem.Application.Features.Employees.Specifications;
 using HrSystem.Application.Repositories;
-using HrSystem.Application.Specifications.Employees;
-using HrSystem.Domain.Entities;
 using MediatR;
 
-namespace HrSystem.Application.Employees.Queries;
+namespace HrSystem.Application.Features.Employees.Queries;
 
 public sealed record GetEmployeeByIdQuery(int Id) : IRequest<EmployeeDto?>;
 
-internal sealed class GetEmployeeByIdQueryHandler(IRepository<Employee> repository)
+internal sealed class GetEmployeeByIdQueryHandler(IRepository<Domain.Entities.Employee> repository)
     : IRequestHandler<GetEmployeeByIdQuery, EmployeeDto?>
 {
-    private readonly IRepository<Employee> _repository = repository;
+    private readonly IRepository<Domain.Entities.Employee> _repository = repository;
 
     public async Task<EmployeeDto?> Handle(
         GetEmployeeByIdQuery request,

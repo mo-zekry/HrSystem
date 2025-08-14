@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace HrSystem.Application.OrgUnits.Commands.Validators;
+namespace HrSystem.Application.Features.OrgUnits.Commands.UpdateOrgUnitCommand;
 
 internal sealed class UpdateOrgUnitCommandValidator : AbstractValidator<UpdateOrgUnitCommand>
 {

@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace HrSystem.Application.LeaveRequests.Commands.Validators;
+namespace HrSystem.Application.Features.LeaveRequests.Commands.RejectLeaveRequest;
 
 internal sealed class RejectLeaveRequestCommandValidator : AbstractValidator<RejectLeaveRequestCommand>
 {

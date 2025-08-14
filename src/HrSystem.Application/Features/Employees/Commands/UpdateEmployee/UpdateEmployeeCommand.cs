@@ -1,9 +1,7 @@
-using HrSystem.Application.Repositories;
-using HrSystem.Domain.Entities;
 using HrSystem.Domain.Enums;
 using MediatR;
 
-namespace HrSystem.Application.Employees.Commands;
+namespace HrSystem.Application.Features.Employees.Commands.UpdateEmployee;
 
 public sealed record UpdateEmployeeCommand(
     int Id,

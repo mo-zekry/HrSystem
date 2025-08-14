@@ -1,6 +1,6 @@
 using HrSystem.Application.Dtos.OrgUnits;
 
-namespace HrSystem.Application.OrgUnits.Queries;
+namespace HrSystem.Application.Features.OrgUnits.Queries.Flat;
 
 // Keyless projection row for OrgUnit hierarchy queries
 public sealed class OrgUnitFlatWithManagers
